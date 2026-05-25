@@ -1,0 +1,342 @@
+instalar servidor
+npm init -y
+npm install express ejs mongoose body-parser method-override 
+node server.js
+
+# ESTRUTURA DAS PASTAS
+
+Hotel/
+│
+├── node_modules
+├── package.json
+├── server.js
+│
+├── models/
+│   ├── Quarto.js
+│   └── Usuario.js
+│
+├── views/
+│   ├── quartos.ejs
+│   ├── cadastrar.ejs
+│   ├── editar.ejs
+│   ├── login.ejs
+│   └── cadastroUsuario.ejs
+│
+├── public/
+│   └── css/
+│       └── style.css
+
+# O QUE VAI EM CADA PASTA
+
+server.js
+
+* servidor
+* rotas
+* CRUD
+* conexão MongoDB
+
+models/
+
+* schemas do banco
+
+views/
+
+* páginas EJS
+
+public/css/
+
+* CSS
+
+# COMANDOS IMPORTANTES
+
+app.get()
+
+* abrir página
+
+app.post()
+
+* enviar formulário
+
+app.put()
+
+* editar
+
+app.delete()
+
+* remover
+
+# CRUD
+
+CREATE
+Model.create()
+
+READ
+Model.find()
+
+UPDATE
+Model.findByIdAndUpdate()
+
+DELETE
+Model.findByIdAndDelete()
+
+# COISAS IMPORTANTES
+
+req.body
+
+* pega dados do formulário
+
+req.params.id
+
+* pega id da URL
+
+res.render()
+
+* abre página EJS
+
+res.redirect()
+
+* redireciona página
+
+# SERVER.JS
+
+const express = require("express")
+const mongoose = require("mongoose")
+const bodyParser = require("body-parser")
+const methodOverride = require("method-override")
+
+const app = express()
+
+const Quarto = require("./models/Quarto")
+
+# CONECTAR MONGODB
+
+mongoose.connect("mongodb://127.0.0.1:27017/hotel")
+
+# CONFIGURAR EJS
+
+app.set("view engine", "ejs")
+
+# LER FORMULÁRIO
+
+app.use(bodyParser.urlencoded({ extended: true }))
+
+# ATIVAR PUT E DELETE
+
+app.use(methodOverride("_method"))
+
+# LIBERAR CSS
+
+app.use(express.static("public"))
+
+# ROTA PRINCIPAL
+
+app.get("/", (req, res) => {
+
+```
+res.redirect("/quartos")
+```
+
+})
+
+# ABRIR PÁGINA CADASTRO
+
+app.get("/cadastro", (req, res) => {
+
+```
+res.render("cadastrar")
+```
+
+})
+
+# CREATE
+
+app.post("/quartos", async (req, res) => {
+
+```
+await Quarto.create({
+
+    numero: req.body.numero,
+    tipo: req.body.tipo,
+    preco: req.body.preco,
+    quantidade: req.body.quantidade
+
+})
+
+res.redirect("/quartos")
+```
+
+})
+
+# READ
+
+app.get("/quartos", async (req, res) => {
+
+```
+const quartos = await Quarto.find()
+
+res.render("quartos", { quartos })
+```
+
+})
+
+# ABRIR TELA EDITAR
+
+app.get("/editar/:id", async (req, res) => {
+
+```
+const quarto = await Quarto.findById(req.params.id)
+
+res.render("editar", { quarto })
+```
+
+})
+
+# UPDATE
+
+app.put("/quartos/:id", async (req, res) => {
+
+```
+await Quarto.findByIdAndUpdate(req.params.id, {
+
+    numero: req.body.numero,
+    tipo: req.body.tipo,
+    preco: req.body.preco,
+    quantidade: req.body.quantidade
+
+})
+
+res.redirect("/quartos")
+```
+
+})
+
+# DELETE
+
+app.delete("/quartos/:id", async (req, res) => {
+
+```
+await Quarto.findByIdAndDelete(req.params.id)
+
+res.redirect("/quartos")
+```
+
+})
+
+# RESERVAR QUARTO
+
+app.post("/reservar/:id", async (req, res) => {
+
+```
+const quarto = await Quarto.findById(req.params.id)
+
+if(quarto.quantidade > 0){
+
+    quarto.quantidade--
+
+    await quarto.save()
+
+}
+
+res.redirect("/quartos")
+```
+
+})
+
+# LIGAR SERVIDOR
+
+app.listen(80, () => {
+
+```
+console.log("Servidor rodando")
+```
+
+})
+
+# MODEL QUARTO
+
+const mongoose = require("mongoose")
+
+const QuartoSchema = new mongoose.Schema({
+
+```
+numero: Number,
+tipo: String,
+preco: Number,
+quantidade: Number
+```
+
+})
+
+module.exports = mongoose.model("Quarto", QuartoSchema)
+
+# FORMULÁRIO CADASTRAR
+
+<form action="/quartos" method="POST">
+
+```
+<input type="number" name="numero">
+
+<input type="text" name="tipo">
+
+<input type="number" name="preco">
+
+<input type="number" name="quantidade">
+
+<button>Cadastrar</button>
+```
+
+</form>
+
+# LISTAR DADOS NO EJS
+
+<% quartos.forEach(quarto => { %>
+
+```
+<p><%= quarto.tipo %></p>
+```
+
+<% }) %>
+
+# BOTÃO EDITAR
+
+<a href="/editar/<%= quarto._id %>">Editar</a>
+
+# BOTÃO REMOVER
+
+<form action="/quartos/<%= quarto._id %>?_method=DELETE" method="POST">
+
+```
+<button>Remover</button>
+```
+
+</form>
+
+# BOTÃO RESERVAR
+
+<form action="/reservar/<%= quarto._id %>" method="POST">
+
+```
+<button>Reservar</button>
+```
+
+</form>
+
+# CSS
+
+body{
+
+```
+background-color: lightgray;
+
+text-align: center;
+```
+
+}
+
+# RODAR SERVIDOR
+
+npx nodemon server.js
+
+# ABRIR NO NAVEGADOR
+
+http://localhost/quartos

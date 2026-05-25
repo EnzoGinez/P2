@@ -1,0 +1,21 @@
+body{
+
+    background-color: lightgray;
+
+    text-align: center;
+
+    font-family: Arial;
+
+}
+
+div{
+
+    background-color: white;
+
+    width: 300px;
+
+    margin: 20px auto;
+
+    padding: 20px;
+
+}

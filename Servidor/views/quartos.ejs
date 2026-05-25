@@ -1,0 +1,41 @@
+<link rel="stylesheet" href="style.css">
+
+<h1>Lista de Quartos</h1>
+
+<a href="/cadastro">Novo Quarto</a>
+
+<% quartos.forEach(quarto => { %>
+
+<div>
+
+    <h2>Quarto <%= quarto.numero %></h2>
+
+    <p>Tipo: <%= quarto.tipo %></p>
+
+    <p>Preço: R$ <%= quarto.preco %></p>
+
+    <p>Quantidade: <%= quarto.quantidade %></p>
+
+    <% if(quarto.quantidade == 0){ %>
+
+        <p>Esgotado</p>
+
+    <% } %>
+
+    <form action="/reservar/<%= quarto._id %>" method="POST">
+
+        <button>Reservar</button>
+
+    </form>
+
+    <a href="/editar/<%= quarto._id %>">Editar</a>
+
+    <form action="/quartos/<%= quarto._id %>?_method=DELETE" method="POST">
+
+        <button>Remover</button>
+
+    </form>
+
+</div>
+
+<% }) %>

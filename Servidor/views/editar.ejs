@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="/css/style.css">
+
+<h1>Editar Quarto</h1>
+
+<form action="/quartos/<%= quarto._id %>?_method=PUT" method="POST">
+
+    <input type="number" name="numero" value="<%= quarto.numero %>">
+
+    <input type="text" name="tipo" value="<%= quarto.tipo %>">
+
+    <input type="number" name="preco" value="<%= quarto.preco %>">
+
+    <input type="number" name="quantidade" value="<%= quarto.quantidade %>">
+
+    <button>Atualizar</button>
+
+</form>
