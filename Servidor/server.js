@@ -7,7 +7,9 @@ const app = express()
 
 const Quarto = require("./models/Quarto")
 
-mongoose.connect("mongodb://127.0.0.1:27017/hotel")
+mongoose.connect(
+"mongodb+srv://enzo:enzoginez@cluster0.abcd.mongodb.net/hotel"
+)
 
 app.set("view engine", "ejs")
 
